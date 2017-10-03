@@ -6,7 +6,7 @@ namespace GetZip
     internal interface ICepSearch
     {
         Task<bool> IsOnline();
-        ICollection<Address> GetByZip(string zipCode);
+        Task<ICollection<Address>> GetByZip(string zipCode);
         ICollection<Address> GetByPlace(string uf, string city, string publicPlace, string publicPlaceType = null, string Neighborhood = null);
     }
 }
