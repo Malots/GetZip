@@ -13,7 +13,7 @@ namespace GetZip
             }
         }
 
-        public static Task<ICollection<Address>> GetByZip(string zipCode, WebService webservice)
+        public static Task<Address> GetByZip(string zipCode, WebService webservice)
         {
             switch (webservice)
             {
