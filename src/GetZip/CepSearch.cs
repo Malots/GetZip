@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace GetZip
 {
@@ -9,6 +8,7 @@ namespace GetZip
         {
             switch (webservice)
             {
+                case WebService.ViaCep: return new ViaCepSearch().IsOnline();
                 default: return new CorreiosCepSearch().IsOnline();
             }
         }
@@ -17,6 +17,7 @@ namespace GetZip
         {
             switch (webservice)
             {
+                case WebService.ViaCep: return new ViaCepSearch().GetByZip(zipCode);
                 default: return new CorreiosCepSearch().GetByZip(zipCode);
             }
         }

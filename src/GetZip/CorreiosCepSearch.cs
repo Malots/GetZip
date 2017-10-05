@@ -1,6 +1,4 @@
 ﻿using HelperConversion;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -63,11 +61,6 @@ namespace GetZip
             {
                 return null;
             }
-        }
-
-        public ICollection<Address> GetByPlace(string uf, string city, string publicPlace, string publicPlaceType = null, string Neighborhood = null)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }
