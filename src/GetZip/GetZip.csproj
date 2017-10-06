@@ -8,8 +8,4 @@
     <PackageReference Include="Malots.HelperConversion.Extension" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ValueObject\" />
-  </ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using GetZip.ValueObject;
+using System.Threading.Tasks;
 
 namespace GetZip
 {

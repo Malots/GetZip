@@ -1,3 +1,4 @@
+using GetZip.ValueObject;
 using HelperConversion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;

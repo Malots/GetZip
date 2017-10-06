@@ -1,4 +1,4 @@
-﻿namespace GetZip
+﻿namespace GetZip.ValueObject
 {
     public sealed class Address
     {
