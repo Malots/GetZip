@@ -1,6 +1,6 @@
 ﻿namespace GetZip
 {
-    public enum WebService
+    public enum ServiceOption
     {
         Correios,
         ViaCep,

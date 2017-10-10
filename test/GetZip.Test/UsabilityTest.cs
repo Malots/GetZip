@@ -1,7 +1,6 @@
 using GetZip.ValueObject;
 using HelperConversion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GetZip.Test
@@ -13,7 +12,8 @@ namespace GetZip.Test
         [TestCategory("Correios")]
         public async Task CheckWebServiceCorreiosStatus()
         {
-            Assert.IsTrue(await CepSearch.IsOnline(WebService.Correios));
+            var getZip = new ServiceSearch(ServiceOption.Correios);
+            Assert.IsTrue(await getZip.IsOnline());
         }
 
         [TestMethod]
@@ -21,8 +21,9 @@ namespace GetZip.Test
         public async Task GiveValidZipCodeGetInformationUseCorreiosWebService()
         {
             string cep = "01002-020";
-            var addressSearch = (await CepSearch.GetByZip(cep, WebService.Correios));
-            var address = new Address(cep.GetOnlyNumbers(), "Viaduto do Chá", "Viaduto do Chá","","Centro","São Paulo","SP");
+            var getZip = new ServiceSearch(ServiceOption.Correios);
+            var addressSearch = (await getZip.GetByZip(cep));
+            var address = new Address(cep.GetOnlyNumbers(), "Viaduto do Chá", "Viaduto do Chá","","Centro","São Paulo","SP","");
             Assert.AreEqual(addressSearch.CEP, address.CEP);
         }
 
@@ -31,7 +32,8 @@ namespace GetZip.Test
         public async Task GiveInvalidZipCodeGetInformationUseCorreiosWebService()
         {
             string cep = "01A02-B20";
-            var addressSearch = (await CepSearch.GetByZip(cep, WebService.Correios));
+            var getZip = new ServiceSearch(ServiceOption.Correios);
+            var addressSearch = (await getZip.GetByZip(cep));
             Assert.IsTrue(addressSearch == null);
         }
 
@@ -39,7 +41,8 @@ namespace GetZip.Test
         [TestCategory("ViaCep")]
         public async Task CheckWebServiceViaCepStatus()
         {
-            Assert.IsTrue(await CepSearch.IsOnline(WebService.ViaCep));
+            var getZip = new ServiceSearch(ServiceOption.ViaCep);
+            Assert.IsTrue(await getZip.IsOnline());
         }
 
         [TestMethod]
@@ -47,8 +50,9 @@ namespace GetZip.Test
         public async Task GiveValidZipCodeGetInformationUseViaCepWebService()
         {
             string cep = "01002-020";
-            var addressSearch = (await CepSearch.GetByZip(cep, WebService.ViaCep));
-            var address = new Address(cep.GetOnlyNumbers(), "Viaduto do Chá", "Viaduto do Chá", "", "Centro", "São Paulo", "SP");
+            var getZip = new ServiceSearch(ServiceOption.ViaCep);
+            var addressSearch = (await getZip.GetByZip(cep));
+            var address = new Address(cep.GetOnlyNumbers(), "Viaduto do Chá", "Viaduto do Chá", "", "Centro", "São Paulo", "SP", "");
             Assert.AreEqual(addressSearch.CEP, address.CEP);
         }
     }

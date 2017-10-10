@@ -3,24 +3,23 @@ using System.Threading.Tasks;
 
 namespace GetZip
 {
-    public static class CepSearch
+    public class CepSearch
     {
-        public static Task<bool> IsOnline(WebService webservice)
+        private readonly ICepSearch _cepsearch;
+
+        public CepSearch(ICepSearch cepsearch)
         {
-            switch (webservice)
-            {
-                case WebService.ViaCep: return new ViaCepSearch().IsOnline();
-                default: return new CorreiosCepSearch().IsOnline();
-            }
+            _cepsearch = cepsearch;
         }
 
-        public static Task<Address> GetByZip(string zipCode, WebService webservice)
+        public async Task<bool> IsOnline()
         {
-            switch (webservice)
-            {
-                case WebService.ViaCep: return new ViaCepSearch().GetByZip(zipCode);
-                default: return new CorreiosCepSearch().GetByZip(zipCode);
-            }
+            return await _cepsearch.IsOnline();
+        }
+
+        public async Task<Address> GetByZip(string zipCode)
+        {
+            return await _cepsearch.GetByZip(zipCode);
         }
     }
 }

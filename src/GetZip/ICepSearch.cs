@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace GetZip
 {
-    internal interface ICepSearch
+    public interface ICepSearch
     {
         Task<bool> IsOnline();
         Task<Address> GetByZip(string zipCode);

@@ -4,9 +4,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GetZip
+namespace GetZip.Http
 {
-    internal static class ZipWebRequest
+    internal static class RequestSearch
     {
         #region methods
         public static async Task<string> GetResponse(string URL, string postData)
@@ -34,9 +34,9 @@ namespace GetZip
                 }
                 return received;
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                return ex.Message;
             }
         }
         #endregion
