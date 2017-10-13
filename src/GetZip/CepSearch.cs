@@ -7,8 +7,10 @@ namespace GetZip
 {
     public class CepSearch
     {
-        private readonly ISearch cepSearch;
+        #region Properties Readonly
+        private readonly BaseSearch cepSearch;
         private readonly string Key;
+        #endregion
 
         public CepSearch(ServiceOption webservice) => cepSearch = GetInstance(webservice);
 
@@ -18,11 +20,14 @@ namespace GetZip
             cepSearch = GetInstance(webservice);
         }
 
+        #region Public methods
         public async Task<bool> IsOnline() => await cepSearch.IsOnline();
 
         public async Task<Address> GetAddress(string zipCode) => await cepSearch.GetAddress(zipCode);
+        #endregion
 
-        private ISearch GetInstance(ServiceOption webservice)
+        #region Private methods
+        private BaseSearch GetInstance(ServiceOption webservice)
         {
             switch (webservice)
             {
@@ -31,5 +36,6 @@ namespace GetZip
                 default: return new CorreiosCepSearch();
             }
         }
+        #endregion
     }
 }

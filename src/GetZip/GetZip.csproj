@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Malots.HelperConversion.Extension" Version="1.0.1" />
+    <PackageReference Include="Malots.HelperConversion.Extension" Version="1.0.2" />
+    <PackageReference Include="Malots.SmartValidations" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

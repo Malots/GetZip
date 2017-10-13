@@ -1,42 +1,29 @@
 ﻿using GetZip.Enums;
+using GetZip.Exceptions;
 using GetZip.Http;
 using GetZip.ValueObject;
 using HelperConversion;
+using SmartValidations.ValueObjects;
+using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GetZip.Services
 {
-    internal sealed class CorreiosCepSearch : ISearch
+    internal sealed class CorreiosCepSearch : BaseSearch
     {
-        #region constants
-        private const string URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl";
-        private const string DOMAIN = "https://apps.correios.com.br";
-        #endregion
+        #region Methods
+        protected override string URL => "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl";
 
-        #region methods
-        public async Task<bool> IsOnline()
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var response = await client.GetAsync(DOMAIN);
-                    return response.StatusCode == HttpStatusCode.OK;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        protected override string Domain => "https://apps.correios.com.br";
 
-        public async Task<Address> GetAddress(string zipCode)
+        public override async Task<Address> GetAddress(string zipCode)
         {
-            try
+            var address = new Address();
+            var cep = new CEP(zipCode);
+            if (cep.IsValid())
             {
                 var data = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" +
                                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -49,22 +36,46 @@ namespace GetZip.Services
                                " </soapenv:Body>" +
                                " </soapenv:Envelope>";
 
-                string result = await RequestSearch.GetResponse(URL, data, MethodOption.POST);
-                if (result != null)
+                try
                 {
+                    string result = await RequestSearch.GetResponse(URL, data, MethodOption.POST);
                     var doc = XDocument.Parse(result);
                     var element = doc.Descendants("return").FirstOrDefault();
-                    var address = new Address(element.Element("cep").Value.GetOnlyNumbers(), element.Element("end").Value.Split(" ")[0].Trim(),
-                        element.Element("end").Value, element.Element("complemento").Value, element.Element("bairro").Value,
-                        element.Element("cidade").Value, element.Element("uf").Value, "");
-                    return address;
+                    address.CEP = element.Element("cep").Value.GetOnlyNumbers();
+                    address.PublicPlaceType = element.Element("end").Value.Split(" ")[0].Trim();
+                    address.PublicPlace = element.Element("end").Value;
+                    address.Complement = element.Element("complemento").Value;
+                    address.Neighborhood = element.Element("bairro").Value;
+                    address.City = element.Element("cidade").Value;
+                    address.UF = element.Element("uf").Value;
+                    address.IBGE = "";
                 }
-                return null;
+                catch (ArgumentException ex)
+                {
+                    address.ErrorMessage = ex.Message;
+                }
+                catch (HttpRequestException ex)
+                {
+                    address.ErrorMessage = ex.Message;
+                }
+                catch (AggregateException ex)
+                {
+                    address.ErrorMessage = ex.Message;
+                }
+                catch (ResponseException ex)
+                {
+                    address.ErrorMessage = ex.Message;
+                }
+                catch (Exception ex)
+                {
+                    address.ErrorMessage = ex.Message;
+                }
             }
-            catch
+            else
             {
-                return null;
+                address.ErrorMessage = "Invalid Zip Code";
             }
+            return address;
         }
         #endregion
     }

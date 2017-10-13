@@ -1,7 +1,7 @@
 ﻿using GetZip.ValueObject;
 using System.Threading.Tasks;
 
-namespace GetZip
+namespace GetZip.Interfaces
 {
     public interface ISearch
     {

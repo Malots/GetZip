@@ -5,28 +5,24 @@ namespace GetZip.ValueObject
 {
     public sealed class Address
     {
-        public Address(string cep, string publicPlaceType, string publicPlace, string complement, 
-            string neighborhood, string city, string uf, string ibge)
+        public Address()
         {
-            CEP = cep;
-            PublicPlaceType = publicPlaceType;
-            PublicPlace = publicPlace;
-            Complement = complement;
-            Neighborhood = neighborhood;
-            City = city;
-            UF = uf;
-            IBGE = ibge;
+            ErrorMessage = null;
         }
 
-        public string CEP { get; private set; }
-        public string PublicPlaceType { get; private set; }
-        public string PublicPlace { get; private set; }
-        public string Complement { get; private set; }
+        #region Properties
+        public string CEP { get; set; }
+        public string PublicPlaceType { get; set; }
+        public string PublicPlace { get; set; }
+        public string Complement { get; set; }
         public string Neighborhood { get; set; }
-        public string City { get; private set; }
-        public string UF { get; private set; }
-        public string IBGE { get; private set; }
+        public string City { get; set; }
+        public string UF { get; set; }
+        public string IBGE { get; set; }
+        public string ErrorMessage { get; set; }
+        #endregion
 
+        #region Methods
         public override string ToString() 
             => new StringBuilder()
                   .Append(nameof(CEP)).Append(" : ").Append(CEP).Append(Environment.NewLine)
@@ -38,5 +34,11 @@ namespace GetZip.ValueObject
                   .Append(nameof(UF)).Append(" : ").Append(UF).Append(Environment.NewLine)
                   .Append(nameof(IBGE)).Append(" : ").Append(IBGE).Append(Environment.NewLine)
                   .ToString();
+
+        public bool IsValid()
+        {
+            return ErrorMessage is null;
+        }
+        #endregion
     }
 }

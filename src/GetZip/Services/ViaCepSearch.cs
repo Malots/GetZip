@@ -3,37 +3,19 @@ using GetZip.Http;
 using GetZip.ValueObject;
 using HelperConversion;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GetZip.Services
 {
-    public class ViaCepSearch : ISearch
+    internal sealed class ViaCepSearch : BaseSearch
     {
-        #region constants
-        private const string URL = "https://viacep.com.br/ws";
-        private const string DOMAIN = "https://viacep.com.br";
-        #endregion
+        #region Methods
+        protected override string URL => "https://viacep.com.br/ws";
 
-        public async Task<bool> IsOnline()
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var response = await client.GetAsync(DOMAIN);
-                    return response.StatusCode == HttpStatusCode.OK;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        protected override string Domain => "https://viacep.com.br";
 
-        public async Task<Address> GetAddress(string zipCode)
+        public override async Task<Address> GetAddress(string zipCode)
         {
             try
             {
@@ -44,9 +26,17 @@ namespace GetZip.Services
                 {
                     var doc = XDocument.Parse(result);
                     var element = doc.Descendants("xmlcep").FirstOrDefault();
-                    var address = new Address(element.Element("cep").Value.GetOnlyNumbers(), element.Element("logradouro").Value.Split(" ")[0].Trim(),
-                        element.Element("logradouro").Value, element.Element("complemento").Value, element.Element("bairro").Value,
-                        element.Element("localidade").Value, element.Element("uf").Value, "");
+                    var address = new Address
+                    {
+                        CEP = element.Element("cep").Value.GetOnlyNumbers(),
+                        PublicPlaceType = element.Element("logradouro").Value.Split(" ")[0].Trim(),
+                        PublicPlace = element.Element("logradouro").Value,
+                        Complement = element.Element("complemento").Value,
+                        Neighborhood = element.Element("bairro").Value,
+                        City = element.Element("localidade").Value,
+                        UF = element.Element("uf").Value,
+                        IBGE = ""
+                    };
                     return address;
                 }
                 return null;
@@ -56,5 +46,6 @@ namespace GetZip.Services
                 return null;
             }
         }
+        #endregion
     }
 }
