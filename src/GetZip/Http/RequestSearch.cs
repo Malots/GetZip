@@ -1,43 +1,44 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Text;
+﻿using GetZip.Enums;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GetZip.Http
 {
-    internal static class RequestSearch
+    public static class RequestSearch
     {
         #region methods
-        public static async Task<string> GetResponse(string URL, string postData)
+        public static async Task<string> GetResponse(string url, string data, MethodOption method)
         {
             try
             {
-                string received = null;
-                var request = WebRequest.Create(new Uri(URL)) as HttpWebRequest;
-                request.UserAgent = "Malots";
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.Method = "POST";
-                byte[] data = Encoding.UTF8.GetBytes(postData);
-                request.ContentLength = data.Length;
-                using (var requestStream = await Task<Stream>.Factory.FromAsync(request.BeginGetRequestStream, request.EndGetRequestStream, request))
+                switch(method)
                 {
-                    await requestStream.WriteAsync(data, 0, data.Length);
+                    case MethodOption.POST: return await PostMethod(url, data);
+                    default: return await GetMethod(url, data);
                 }
-                using (var responseObject = await Task<WebResponse>.Factory.FromAsync(request.BeginGetResponse, request.EndGetResponse, request))
-                {
-                    var responseStream = responseObject.GetResponseStream();
-                    using (var reader = new StreamReader(responseStream))
-                    {
-                        received = await reader.ReadToEndAsync();
-                    }
-                }
-                return received;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return ex.Message;
             }
+        }
+
+        private static async Task<string> GetMethod(string url, string data)
+        {
+            var client = new HttpClient { BaseAddress = new Uri(url) };
+            var result = client.GetAsync(data);
+            var received = result.Result;
+            return await received.Content.ReadAsStringAsync();
+        }
+
+        private static async Task<string> PostMethod(string url, string data)
+        {
+            var client = new HttpClient { BaseAddress = new Uri(url) };
+            var result = await client.PostAsync(client.BaseAddress, new StringContent(data));
+            result.EnsureSuccessStatusCode();
+            var received = result.Content;
+            return await received.ReadAsStringAsync();
         }
         #endregion
     }

@@ -2,6 +2,7 @@
 using GetZip.Http;
 using GetZip.ValueObject;
 using HelperConversion;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,12 +11,21 @@ using System.Xml.Linq;
 
 namespace GetZip.Services
 {
-    public class ViaCepSearch : ISearch
+    public class CepLivreSearch : ISearch
     {
         #region constants
-        private const string URL = "https://viacep.com.br/ws";
-        private const string DOMAIN = "https://viacep.com.br";
+        private const string URL = "http://ceplivre.com.br/consultar";
+        private const string DOMAIN = "http://ceplivre.com.br";
         #endregion
+
+        #region Properties
+        private readonly string Key;
+        #endregion
+
+        public CepLivreSearch(string key)
+        {
+            Key = key;
+        }
 
         public async Task<bool> IsOnline()
         {
@@ -37,16 +47,17 @@ namespace GetZip.Services
         {
             try
             {
-                var data = $"{URL}/{zipCode.GetOnlyNumbers()}/xml";
+                var cep = String.Format("{0:00000-000}", zipCode);
+                var data = $"{URL}/cep/{Key}/{cep}/xml";
 
                 string result = await RequestSearch.GetResponse(URL, data, MethodOption.GET);
                 if (result != null)
                 {
                     var doc = XDocument.Parse(result);
-                    var element = doc.Descendants("xmlcep").FirstOrDefault();
-                    var address = new Address(element.Element("cep").Value.GetOnlyNumbers(), element.Element("logradouro").Value.Split(" ")[0].Trim(),
-                        element.Element("logradouro").Value, element.Element("complemento").Value, element.Element("bairro").Value,
-                        element.Element("localidade").Value, element.Element("uf").Value, "");
+                    var element = doc.Descendants("cep").FirstOrDefault();
+                    var address = new Address(element.Element("cep").Value.GetOnlyNumbers(), element.Element("tp_logradouro").Value,
+                        element.Element("tp_logradouro").Value+" "+element.Element("logradouro").Value, "", element.Element("bairro").Value,
+                        element.Element("cidade").Value, element.Element("uf_sigla").Value, "");
                     return address;
                 }
                 return null;

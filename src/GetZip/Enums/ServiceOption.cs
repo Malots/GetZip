@@ -1,4 +1,4 @@
-﻿namespace GetZip
+﻿namespace GetZip.Emums
 {
     public enum ServiceOption
     {

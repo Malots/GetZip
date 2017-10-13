@@ -1,25 +1,35 @@
-﻿using GetZip.ValueObject;
+﻿using GetZip.Emums;
+using GetZip.Services;
+using GetZip.ValueObject;
 using System.Threading.Tasks;
 
 namespace GetZip
 {
     public class CepSearch
     {
-        private readonly ICepSearch _cepsearch;
+        private readonly ISearch cepSearch;
+        private readonly string Key;
 
-        public CepSearch(ICepSearch cepsearch)
+        public CepSearch(ServiceOption webservice) => cepSearch = GetInstance(webservice);
+
+        public CepSearch(ServiceOption webservice, string key)
         {
-            _cepsearch = cepsearch;
+            Key = key;
+            cepSearch = GetInstance(webservice);
         }
 
-        public async Task<bool> IsOnline()
-        {
-            return await _cepsearch.IsOnline();
-        }
+        public async Task<bool> IsOnline() => await cepSearch.IsOnline();
 
-        public async Task<Address> GetByZip(string zipCode)
+        public async Task<Address> GetAddress(string zipCode) => await cepSearch.GetAddress(zipCode);
+
+        private ISearch GetInstance(ServiceOption webservice)
         {
-            return await _cepsearch.GetByZip(zipCode);
+            switch (webservice)
+            {
+                case ServiceOption.ViaCep: return new ViaCepSearch();
+                case ServiceOption.CepLivre: return new CepLivreSearch(Key);
+                default: return new CorreiosCepSearch();
+            }
         }
     }
 }

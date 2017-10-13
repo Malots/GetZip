@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace GetZip
 {
-    public interface ICepSearch
+    public interface ISearch
     {
         Task<bool> IsOnline();
-        Task<Address> GetByZip(string zipCode);
+        Task<Address> GetAddress(string zipCode);
     }
 }
