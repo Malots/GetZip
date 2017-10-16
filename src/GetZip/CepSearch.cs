@@ -12,6 +12,8 @@ namespace GetZip
         private readonly string Key;
         #endregion
 
+
+        #region Public methods
         public CepSearch(ServiceOption webservice) => cepSearch = GetInstance(webservice);
 
         public CepSearch(ServiceOption webservice, string key)
@@ -20,7 +22,6 @@ namespace GetZip
             cepSearch = GetInstance(webservice);
         }
 
-        #region Public methods
         public async Task<bool> IsOnline() => await cepSearch.IsOnline();
 
         public async Task<Address> GetAddress(string zipCode) => await cepSearch.GetAddress(zipCode);

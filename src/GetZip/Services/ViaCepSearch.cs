@@ -1,10 +1,8 @@
 ﻿using GetZip.Enums;
-using GetZip.Http;
+using GetZip.Helpers;
 using GetZip.ValueObject;
 using HelperConversion;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace GetZip.Services
 {
@@ -17,34 +15,26 @@ namespace GetZip.Services
 
         public override async Task<Address> GetAddress(string zipCode)
         {
-            try
-            {
-                var data = $"{URL}/{zipCode.GetOnlyNumbers()}/xml";
+            var address = new Address();
+            var data = $"{URL}/{zipCode.GetOnlyNumbers()}/xml";
 
-                string result = await RequestSearch.GetResponse(URL, data, MethodOption.GET);
-                if (result != null)
-                {
-                    var doc = XDocument.Parse(result);
-                    var element = doc.Descendants("xmlcep").FirstOrDefault();
-                    var address = new Address
-                    {
-                        CEP = element.Element("cep").Value.GetOnlyNumbers(),
-                        PublicPlaceType = element.Element("logradouro").Value.Split(" ")[0].Trim(),
-                        PublicPlace = element.Element("logradouro").Value,
-                        Complement = element.Element("complemento").Value,
-                        Neighborhood = element.Element("bairro").Value,
-                        City = element.Element("localidade").Value,
-                        UF = element.Element("uf").Value,
-                        IBGE = ""
-                    };
-                    return address;
-                }
-                return null;
-            }
-            catch
+            var element = await ResponseHelper.ResultRequest(URL, data, "xmlcep", MethodOption.GET);
+            if (element.Name == "error")
             {
-                return null;
+                address.ErrorMessage = element.Value;
             }
+            else
+            {
+                address.CEP = element.Element("cep").Value.GetOnlyNumbers();
+                address.PublicPlaceType = element.Element("logradouro").Value.Split(" ")[0].Trim();
+                address.PublicPlace = element.Element("logradouro").Value;
+                address.Complement = element.Element("complemento").Value;
+                address.Neighborhood = element.Element("bairro").Value;
+                address.City = element.Element("localidade").Value;
+                address.UF = element.Element("uf").Value;
+                address.IBGE = "";
+            }
+            return address;
         }
         #endregion
     }

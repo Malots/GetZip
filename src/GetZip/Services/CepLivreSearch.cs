@@ -1,11 +1,9 @@
 ﻿using GetZip.Enums;
-using GetZip.Http;
+using GetZip.Helpers;
 using GetZip.ValueObject;
 using HelperConversion;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace GetZip.Services
 {
@@ -27,35 +25,27 @@ namespace GetZip.Services
 
         public override async Task<Address> GetAddress(string zipCode)
         {
-            try
-            {
-                var cep = String.Format("{0:00000-000}", zipCode);
-                var data = $"{URL}/cep/{Key}/{cep}/xml";
+            var address = new Address();
+            var cep = String.Format("{0:00000-000}", zipCode);
+            var data = $"{URL}/cep/{Key}/{cep}/xml";
 
-                string result = await RequestSearch.GetResponse(URL, data, MethodOption.GET);
-                if (result != null)
-                {
-                    var doc = XDocument.Parse(result);
-                    var element = doc.Descendants("cep").FirstOrDefault();
-                    var address = new Address
-                    {
-                        CEP = element.Element("cep").Value.GetOnlyNumbers(),
-                        PublicPlaceType = element.Element("tp_logradouro").Value,
-                        PublicPlace = element.Element("tp_logradouro").Value + " " + element.Element("logradouro").Value,
-                        Complement = "",
-                        Neighborhood = element.Element("bairro").Value,
-                        City = element.Element("cidade").Value,
-                        UF = element.Element("uf_sigla").Value,
-                        IBGE = ""
-                    };
-                    return address;
-                }
-                return null;
-            }
-            catch
+            var element = await ResponseHelper.ResultRequest(URL, data, "cep", MethodOption.GET);
+            if (element.Name == "error")
             {
-                return null;
+                address.ErrorMessage = element.Value;
             }
+            else
+            {
+                address.CEP = element.Element("cep").Value.GetOnlyNumbers();
+                address.PublicPlaceType = element.Element("tp_logradouro").Value;
+                address.PublicPlace = element.Element("tp_logradouro").Value + " " + element.Element("logradouro").Value;
+                address.Complement = "";
+                address.Neighborhood = element.Element("bairro").Value;
+                address.City = element.Element("cidade").Value;
+                address.UF = element.Element("uf_sigla").Value;
+                address.IBGE = "";
+            }
+            return address;
         }
         #endregion
     }

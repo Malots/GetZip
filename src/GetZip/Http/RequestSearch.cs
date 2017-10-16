@@ -1,6 +1,7 @@
 ﻿using GetZip.Enums;
 using GetZip.Exceptions;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,23 +22,23 @@ namespace GetZip.Http
             }
             catch (ArgumentException ex)
             {
-                throw new ArgumentException("Error", ex);
+                throw new ArgumentException(ex.Message);
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("Error", ex);
+                throw new HttpRequestException(ex.Message);
             }
             catch (AggregateException ex)
             {
-                throw new AggregateException("Error", ex);
+                throw new AggregateException(ex.Message);
             }
             catch (ResponseException ex)
             {
-                throw new ResponseException("Error", ex);
+                throw new ResponseException(ex.Message);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+                throw new Exception(ex.Message);
             }
         }
         #endregion
@@ -46,9 +47,12 @@ namespace GetZip.Http
         private static async Task<string> GetMethod(string url, string data)
         {
             var client = new HttpClient { BaseAddress = new Uri(url) };
-            var result = client.GetAsync(data);
-            var received = result.Result;
-            return await received.Content.ReadAsStringAsync();
+            var result = await client.GetAsync(data);
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                throw new InvalidZipCodeException();
+            }
+            return await result.Content.ReadAsStringAsync();
         }
 
         private static async Task<string> PostMethod(string url, string data)

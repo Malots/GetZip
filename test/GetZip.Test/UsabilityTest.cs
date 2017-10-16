@@ -48,7 +48,6 @@ namespace GetZip.Test
             var getZip = new CepSearch(ServiceOption.Correios);
             var addressSearch = (await getZip.GetAddress(cep));
             Assert.IsFalse(addressSearch.IsValid());
-            Assert.AreEqual("Invalid Zip Code", addressSearch.ErrorMessage);
         }
         #endregion
 
@@ -89,7 +88,7 @@ namespace GetZip.Test
             string cep = "01A02-B20";
             var getZip = new CepSearch(ServiceOption.ViaCep);
             var addressSearch = (await getZip.GetAddress(cep));
-            Assert.IsTrue(addressSearch == null);
+            Assert.IsFalse(addressSearch.IsValid());
         }
         #endregion
 
@@ -130,7 +129,7 @@ namespace GetZip.Test
             string cep = "01A02-B20";
             var getZip = new CepSearch(ServiceOption.CepLivre, "5f2826fef3b80b2c57da7bc3330b4132");
             var addressSearch = (await getZip.GetAddress(cep));
-            Assert.IsTrue(addressSearch == null);
+            Assert.IsFalse(addressSearch.IsValid());
         }
         #endregion
     }
