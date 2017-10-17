@@ -3,6 +3,9 @@ using System.Text;
 
 namespace GetZip.ValueObject
 {
+    /// <summary>
+    /// Address value object
+    /// </summary>
     public sealed class Address
     {
         public Address()
@@ -22,7 +25,11 @@ namespace GetZip.ValueObject
         public string ErrorMessage { get; set; }
         #endregion
 
-        #region Methods
+        #region Public Methods
+        /// <summary>
+        /// Convert address to string
+        /// </summary>
+        /// <returns>string value</returns>
         public override string ToString() 
             => new StringBuilder()
                   .Append(nameof(CEP)).Append(" : ").Append(CEP).Append(Environment.NewLine)
@@ -35,6 +42,10 @@ namespace GetZip.ValueObject
                   .Append(nameof(IBGE)).Append(" : ").Append(IBGE).Append(Environment.NewLine)
                   .ToString();
 
+        /// <summary>
+        /// Check if address contains any error
+        /// </summary>
+        /// <returns></returns>
         public bool IsValid()
         {
             return ErrorMessage is null;

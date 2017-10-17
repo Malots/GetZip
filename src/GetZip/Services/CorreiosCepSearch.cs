@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace GetZip.Services
 {
+    /// <summary>
+    /// Correios webservice
+    /// </summary>
     internal sealed class CorreiosCepSearch : BaseSearch
     {
-        #region Methods
+        #region Public override methods
         protected override string URL => "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl";
 
         protected override string Domain => "https://apps.correios.com.br";

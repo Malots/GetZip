@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace GetZip.Services
 {
+    /// <summary>
+    /// ViaCepSearch webservice
+    /// </summary>
     internal sealed class ViaCepSearch : BaseSearch
     {
-        #region Methods
+        #region Public override methods
         protected override string URL => "https://viacep.com.br/ws";
 
         protected override string Domain => "https://viacep.com.br";

@@ -7,18 +7,28 @@ using System.Threading.Tasks;
 
 namespace GetZip.Services
 {
+    /// <summary>
+    /// Ceplivre webservice
+    /// </summary>
     internal sealed class CepLivreSearch : BaseSearch
     {
+        /// <summary>
+        /// Create instance of Ceplivre with key
+        /// </summary>
+        /// <param name="key"></param>
         public CepLivreSearch(string key)
         {
             Key = key;
         }
 
         #region Properties
+        /// <summary>
+        /// Required Key 
+        /// </summary>
         private readonly string Key;
         #endregion
 
-        #region Methods
+        #region Public override methods
         protected override string URL => "http://ceplivre.com.br/consultar";
 
         protected override string Domain => "http://ceplivre.com.br";

@@ -2,6 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>Malots.GetZip</PackageId>
+    <Authors>leonardovene</Authors>
+    <Company>Malots</Company>
+    <Product>GetZip</Product>
+    <Description>Package with useful zipcode search information</Description>
+    <Copyright>Malots</Copyright>
+    <PackageProjectUrl>https://github.com/Malots/GetZip</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Malots/GetZip</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>zipcode</PackageTags>
+    <NeutralLanguage>Inglês (Estados Unidos)</NeutralLanguage>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
